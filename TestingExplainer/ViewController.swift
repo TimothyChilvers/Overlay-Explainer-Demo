@@ -127,6 +127,7 @@ var overlayWindowAssociatedObjectKey: UInt8 = 0
 
 extension UIViewController {
     
+    // Yay stored properties in extensions
     var overlayWindow: UIWindow? {
         get {
             return objc_getAssociatedObject(self, &overlayWindowAssociatedObjectKey) as? UIWindow
@@ -136,6 +137,7 @@ extension UIViewController {
         }
     }
     
+    // Should be showOverlay or similar
     func setOverlay(withHighlightView highlightView: UIView?, padding: CGSize = .zero, offsetToRight: Bool = false) {
         guard let existingWindow = UIApplication.shared.keyWindow else { return }
         
@@ -225,6 +227,7 @@ class OverlayViewController: UIViewController {
             highlightBorderView?.layer.borderWidth = 5
             self.view.addSubview(highlightBorderView!)
             
+                            // Last I remember (And google from 2012 agrees) bounds is not strictly KVO compliant  
             highlightView.layer.addObserver(self, forKeyPath: "bounds", options: [], context: nil)
             
             explainerView = UIView()
@@ -281,6 +284,8 @@ class OverlayViewController: UIViewController {
         
             let convertedFrame = self.view.convert(highlightView.frame, from: highlightView.superview)
             highlightBorderView?.frame = convertedFrame.insetBy(dx: -padding.width, dy: -padding.height)
+
+                                                    // I bet this is undocumented, isn't it?
         } else if let barButtonItemView = barButtonItem?.value(forKey: "view") as? UIView {
             highlightBorderView?.frame = barButtonItemView.frame.offsetBy(dx: 0, dy: UIApplication.shared.statusBarFrame.height).insetBy(dx: -padding.width, dy: -padding.height)
         }
